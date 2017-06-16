@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/omeid/conex"
-	"github.com/omeid/conex/postgres"
+	"github.com/conex/postgres"
 )
 
 func TestMain(m *testing.M) {

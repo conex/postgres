@@ -14,7 +14,7 @@ import (
 var (
 	// Image to use for the box.
 	Image = "postgres:alpine"
-	// Port used for connect to redis.
+	// Port used for connect to postgres server.
 	Port = "5432"
 
 	// PostgresUpWaitTime dectiates how long we should wait for post Postgresql to accept connections on {{Port}}.
