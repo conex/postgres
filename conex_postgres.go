@@ -55,6 +55,13 @@ func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
 		Expose: []string{Port},
 	})
 
+	if config == nil {
+		config = &Config{
+			Database: "postgres",
+			User:     "postgres",
+		}
+	}
+
 	config.host = c.Address()
 	config.port = Port
 
