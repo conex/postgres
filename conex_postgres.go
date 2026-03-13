@@ -17,7 +17,7 @@ var (
 	// Port used for connect to postgres server.
 	Port = "5432"
 
-	// PostgresUpWaitTime dectiates how long we should wait for post Postgresql to accept connections on {{Port}}.
+	// PostgresUpWaitTime dictates how long we should wait for Postgresql to accept connections on {{Port}}.
 	PostgresUpWaitTime = 10 * time.Second
 )
 
@@ -50,11 +50,6 @@ func (c *Config) url() string {
 // Box returns an sql.DB connection and the container running the Postgresql
 // instance. It will call t.Fatal on errors.
 func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
-	c := conex.Box(t, &conex.Config{
-		Image:  Image,
-		Expose: []string{Port},
-	})
-
 	if config == nil {
 		config = &Config{
 			Database: "postgres",
@@ -62,23 +57,29 @@ func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
 		}
 	}
 
+	c := conex.Box(t, &conex.Config{
+		Image:  Image,
+		Expose: []string{Port},
+		Env:    []string{"POSTGRES_HOST_AUTH_METHOD=trust"},
+	})
+
 	config.host = c.Address()
 	config.port = Port
 
-	t.Logf("Waiting for Postgresql to accept connections")
+	t.Log("Waiting for Postgresql to accept connections")
 
 	err := c.Wait(Port, PostgresUpWaitTime)
 
 	if err != nil {
-		c.Drop() // return the container
-		t.Fatal("Postgres failed to start.", err)
+		c.Drop()
+		t.Fatal("Postgres failed to start:", err)
 	}
 
 	t.Log("Postgresql is now accepting connections")
 	db, err := sql.Open("postgres", config.url())
 
 	if err != nil {
-		c.Drop() // return the container
+		c.Drop()
 		t.Fatal(err)
 	}
 
