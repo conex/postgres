@@ -66,7 +66,7 @@ func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
 	config.host = c.Address()
 	config.port = Port
 
-	t.Log("Waiting for Postgresql to accept connections")
+	conex.Logf(t, "postgres", "Waiting for Postgresql to accept connections")
 
 	err := c.Wait(Port, PostgresUpWaitTime)
 
@@ -75,7 +75,7 @@ func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
 		t.Fatal("Postgres failed to start:", err)
 	}
 
-	t.Log("Postgresql is now accepting connections")
+	conex.Logf(t, "postgres", "Postgresql is now accepting connections")
 	db, err := sql.Open("postgres", config.url())
 
 	if err != nil {
