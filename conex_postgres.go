@@ -3,12 +3,11 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"slices"
 	"testing"
 	"time"
 
 	"github.com/omeid/conex"
-	// The driver.
-	_ "github.com/lib/pq"
 )
 
 var (
@@ -50,6 +49,10 @@ func (c *Config) url() string {
 // Box returns an sql.DB connection and the container running the Postgresql
 // instance. It will call t.Fatal on errors.
 func Box(t testing.TB, config *Config) (*sql.DB, conex.Container) {
+	if !slices.Contains(sql.Drivers(), "postgres") {
+		t.Fatal("No SQL driver registered for postgres. Did you forget to import one? (e.g., _ \"github.com/lib/pq\")")
+	}
+
 	if config == nil {
 		config = &Config{
 			Database: "postgres",

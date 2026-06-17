@@ -7,6 +7,8 @@ import (
 
 	"github.com/conex/postgres"
 	"github.com/omeid/conex"
+
+	_ "github.com/lib/pq"
 )
 
 func TestMain(m *testing.M) {
